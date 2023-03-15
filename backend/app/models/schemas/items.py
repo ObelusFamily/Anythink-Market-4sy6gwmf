@@ -1,6 +1,6 @@
-from typing import List, Optional
+from typing import List, Optional, Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 from app.models.domain.items import Item
 from app.models.schemas.rwschema import RWSchema
@@ -11,6 +11,14 @@ DEFAULT_ITEMS_OFFSET = 0
 
 class ItemForResponse(RWSchema, Item):
     tags: List[str] = Field(..., alias="tagList")
+
+    @validator("image")
+    def handle_no_image(cls, v: Optional[str]) -> Any:
+        print("image=", v)
+        if not v:
+            return "placeholder.png"
+            
+        return v
 
 
 class ItemInResponse(RWSchema):
